@@ -3,6 +3,9 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 
+require('./config/config');
+
+
 app.use(bodyParser.urlencoded({extend: false}));
 app.use(bodyParser.json());
 
@@ -12,9 +15,18 @@ app.get('/usuario', function(req, resp) {
 
 app.post('/usuario', function(req, resp) {
   let body = req.body;
-  resp.json({
-    body
-  });
+
+  if(body.nombre === undefined) {
+    resp.status(400).json({
+      ok: false,
+      mensaje: 'El nombre es necesario'
+    });
+
+  } else {
+    resp.json({
+      persona: body
+    });
+  }
 });
 
 app.put('/usuario/:id', function(req, resp) {
@@ -29,6 +41,6 @@ app.delete('/usuario', function(req, resp) {
 });
 
 
-app.listen(3000, () => {
+app.listen(process.env.PORT, () => {
   console.log('Escuchando desde el puerto 3000');
 });
